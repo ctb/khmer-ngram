@@ -1,0 +1,82 @@
+>>> from hash import BloomFilter, retrieve_first_sentence, retrieve_all_sentences
+
+>>> x = BloomFilter([1001, 1003, 1005])
+>>> 'oogaboog' in x
+False
+
+>>> x.add('oogaboog')
+>>> 'oogaboog' in x
+True
+
+
+Retrieving a sentence:
+
+>>> x = BloomFilter([1001, 1003, 1005, 1007])
+
+>>> x.insert_text('foo bar baz bif zap!')
+>>> x.insert_text('the quick brown fox jumped over the lazy dog')
+
+>>> print retrieve_first_sentence(x, 'foo bar ')
+foo bar baz bif zap!
+>>> print retrieve_first_sentence(x, 'the quic')
+the quick brown fox jumped over the lazy dog
+
+Retrieving a sentence (with errors):
+    
+>>> x = BloomFilter([1001, 1003])
+
+>>> x.insert_text('foo bar baz bif zap!')
+>>> x.insert_text('the quick brown fox jumped over the lazy dog')
+
+>>> retrieve_first_sentence(x, 'foo bar '),
+('foo bar baz bi<\x04|',)
+>>> retrieve_first_sentence(x, 'the quic'),
+('the quick \x1ff',)
+
+Using smaller k-mers (k=6):
+    
+>>> x = BloomFilter([1001, 1003, 1005, 1007], 6)
+
+>>> x.insert_text('foo bar baz bif zap!')
+>>> x.insert_text('the quick brown fox jumped over the lazy dog')
+
+>>> print retrieve_first_sentence(x, 'foo bar ')
+foo bar baz bif zap!
+>>> print retrieve_first_sentence(x, 'the quic')
+the quick brown fox jumped over the lazy dog
+
+Retrieving multiple sentences/paths:
+
+>>> x = BloomFilter([1001, 1003, 1005, 1007])
+
+>>> x.insert_text('foo bar baz is the sentence')
+>>> x.insert_text('foo bar bif how doody')
+
+>>> for s in retrieve_all_sentences(x, 'foo bar '):
+...     print (s,)
+('foo bar baz is the sentence',)
+('foo bar bif how doody',)
+
+>>> [ "%.2f%%" % (n*100) for n in x.occupancy() ]
+['3.10%', '3.19%', '2.99%', '3.18%']
+
+Retrieving multiple sentences, with errors:
+
+>>> x = BloomFilter([1001, 1003])
+
+>>> x.insert_text('foo bar baz is the sentence')
+>>> x.insert_text('foo bar bif how doody')
+
+>>> for s in retrieve_all_sentences(x, 'foo bar '):
+...     print (s,)
+('foo bar baz is the sentence',)
+('foo bar baz is the sen\xfe',)
+('foo bar baz is\xf2L',)
+('foo bar bif how do\x15 \x07',)
+('foo bar bif how doody',)
+('foo bar bif h\x80',)
+('foo bar bif \xae\x14\x01',)
+('foo bar bif \xae\x81\x96',)
+
+>>> [ "%.2f%%" % (n*100) for n in x.occupancy() ]
+['3.10%', '3.19%']
