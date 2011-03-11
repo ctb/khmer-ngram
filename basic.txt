@@ -8,6 +8,16 @@ False
 >>> 'oogaboog' in x
 True
 
+False positives:
+
+>>> x = BloomFilter([2])
+>>> x.add('a')
+>>> 'a' in x
+True
+>>> 'b' in x
+False
+>>> 'c' in x
+True
 
 Retrieving a sentence:
 
@@ -29,9 +39,9 @@ Retrieving a sentence (with errors):
 >>> x.insert_text('the quick brown fox jumped over the lazy dog')
 
 >>> retrieve_first_sentence(x, 'foo bar '),
-('foo bar baz bi<\x04|',)
+('foo bar ba\r;',)
 >>> retrieve_first_sentence(x, 'the quic'),
-('the quick \x1ff',)
+('the quick brY',)
 
 Using smaller k-mers (k=6):
     
@@ -58,7 +68,7 @@ Retrieving multiple sentences/paths:
 ('foo bar bif how doody',)
 
 >>> [ "%.2f%%" % (n*100) for n in x.occupancy() ]
-['3.10%', '3.19%', '2.99%', '3.18%']
+['3.10%', '3.19%', '3.18%', '3.18%']
 
 Retrieving multiple sentences, with errors:
 
@@ -69,14 +79,13 @@ Retrieving multiple sentences, with errors:
 
 >>> for s in retrieve_all_sentences(x, 'foo bar '):
 ...     print (s,)
-('foo bar baz is the sentence',)
-('foo bar baz is the sen\xfe',)
-('foo bar baz is\xf2L',)
-('foo bar bif how do\x15 \x07',)
+('foo bar baz \x11',)
+('foo bar baz is \x19',)
+('foo bar baz is th5',)
+('foo bar baz is the sentence<O',)
+('foo bar baz is the sev',)
+('foo bar bi\x14',)
 ('foo bar bif how doody',)
-('foo bar bif h\x80',)
-('foo bar bif \xae\x14\x01',)
-('foo bar bif \xae\x81\x96',)
 
 >>> [ "%.2f%%" % (n*100) for n in x.occupancy() ]
 ['3.10%', '3.19%']
