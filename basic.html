@@ -304,6 +304,17 @@ False
 &gt;&gt;&gt; 'oogaboog' in x
 True
 </pre>
+<p>False positives:</p>
+<pre class="doctest-block">
+&gt;&gt;&gt; x = BloomFilter([2])
+&gt;&gt;&gt; x.add('a')
+&gt;&gt;&gt; 'a' in x
+True
+&gt;&gt;&gt; 'b' in x
+False
+&gt;&gt;&gt; 'c' in x
+True
+</pre>
 <p>Retrieving a sentence:</p>
 <pre class="doctest-block">
 &gt;&gt;&gt; x = BloomFilter([1001, 1003, 1005, 1007])
@@ -318,6 +329,18 @@ foo bar baz bif zap!
 &gt;&gt;&gt; print retrieve_first_sentence(x, 'the quic')
 the quick brown fox jumped over the lazy dog
 </pre>
+<p>Assembling:</p>
+<pre class="doctest-block">
+&gt;&gt;&gt; x = BloomFilter([1001, 1003, 1005, 1007])
+</pre>
+<pre class="doctest-block">
+&gt;&gt;&gt; x.insert_text('the quick brown fox jumped ')
+&gt;&gt;&gt; x.insert_text('jumped over the lazy dog')
+</pre>
+<pre class="doctest-block">
+&gt;&gt;&gt; print retrieve_first_sentence(x, 'the quic')
+the quick brown fox jumped over the lazy dog
+</pre>
 <p>Retrieving a sentence (with errors):</p>
 <pre class="doctest-block">
 &gt;&gt;&gt; x = BloomFilter([1001, 1003])
@@ -328,9 +351,20 @@ the quick brown fox jumped over the lazy dog
 </pre>
 <pre class="doctest-block">
 &gt;&gt;&gt; retrieve_first_sentence(x, 'foo bar '),
-('foo bar baz bi&lt;\x04|',)
+('foo bar ba\r;',)
 &gt;&gt;&gt; retrieve_first_sentence(x, 'the quic'),
-('the quick \x1ff',)
+('the quick brY',)
+</pre>
+<pre class="doctest-block">
+&gt;&gt;&gt; x = BloomFilter([1001, 1003, 1005, 1007])
+</pre>
+<pre class="doctest-block">
+&gt;&gt;&gt; x.insert_text('na na na, batman!')
+&gt;&gt;&gt; x.insert_text('my chemical romance: na na na')
+</pre>
+<pre class="doctest-block">
+&gt;&gt;&gt; retrieve_first_sentence(x, &quot;my chemical&quot;)
+'my chemical romance: na na na, batman!'
 </pre>
 <p>Using smaller k-mers (k=6):</p>
 <pre class="doctest-block">
@@ -362,7 +396,7 @@ the quick brown fox jumped over the lazy dog
 </pre>
 <pre class="doctest-block">
 &gt;&gt;&gt; [ &quot;%.2f%%&quot; % (n*100) for n in x.occupancy() ]
-['3.10%', '3.19%', '2.99%', '3.18%']
+['3.10%', '3.19%', '3.18%', '3.18%']
 </pre>
 <p>Retrieving multiple sentences, with errors:</p>
 <pre class="doctest-block">
@@ -375,14 +409,13 @@ the quick brown fox jumped over the lazy dog
 <pre class="doctest-block">
 &gt;&gt;&gt; for s in retrieve_all_sentences(x, 'foo bar '):
 ...     print (s,)
-('foo bar baz is the sentence',)
-('foo bar baz is the sen\xfe',)
-('foo bar baz is\xf2L',)
-('foo bar bif how do\x15 \x07',)
+('foo bar baz \x11',)
+('foo bar baz is \x19',)
+('foo bar baz is th5',)
+('foo bar baz is the sentence&lt;O',)
+('foo bar baz is the sev',)
+('foo bar bi\x14',)
 ('foo bar bif how doody',)
-('foo bar bif h\x80',)
-('foo bar bif \xae\x14\x01',)
-('foo bar bif \xae\x81\x96',)
 </pre>
 <pre class="doctest-block">
 &gt;&gt;&gt; [ &quot;%.2f%%&quot; % (n*100) for n in x.occupancy() ]

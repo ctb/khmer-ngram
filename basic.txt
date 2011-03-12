@@ -31,6 +31,16 @@ foo bar baz bif zap!
 >>> print retrieve_first_sentence(x, 'the quic')
 the quick brown fox jumped over the lazy dog
 
+Assembling:
+
+>>> x = BloomFilter([1001, 1003, 1005, 1007])
+
+>>> x.insert_text('the quick brown fox jumped ')
+>>> x.insert_text('jumped over the lazy dog')
+
+>>> print retrieve_first_sentence(x, 'the quic')
+the quick brown fox jumped over the lazy dog
+
 Retrieving a sentence (with errors):
     
 >>> x = BloomFilter([1001, 1003])
@@ -42,6 +52,14 @@ Retrieving a sentence (with errors):
 ('foo bar ba\r;',)
 >>> retrieve_first_sentence(x, 'the quic'),
 ('the quick brY',)
+
+>>> x = BloomFilter([1001, 1003, 1005, 1007])
+
+>>> x.insert_text('na na na, batman!')
+>>> x.insert_text('my chemical romance: na na na')
+
+>>> retrieve_first_sentence(x, "my chemical")
+'my chemical romance: na na na, batman!'
 
 Using smaller k-mers (k=6):
     
