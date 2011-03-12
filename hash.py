@@ -11,9 +11,7 @@ def is_prime(n):
       return False
    if n == 2:
       return True
-   if n % 2 == 0:
-      return False
-   for x in range(3, int(n**0.5)+1, 2):
+   for x in range(2, int(n**0.5)+1, 2):
       if n % x == 0:
          return False
    return True
@@ -92,6 +90,13 @@ def next_words(bf, word):
         word = prefix + ch
         if word in bf:
             yield ch
+            
+def previous_words(bf, word):
+    suffix = word[:-1]
+    for ch in bf.allchars:
+        word = ch + suffix
+        if word in bf:
+            yield ch
         
 
 def retrieve_all_sentences(bf, start, max_depth=50):
@@ -108,3 +113,23 @@ def retrieve_all_sentences(bf, start, max_depth=50):
 
     if n < 0:
         yield start
+
+def count_connected_graph(bf, word, cutoff=10, keeper=None):
+    assert len(word) == bf.k
+    if keeper is None:
+        keeper = set()
+    
+    if word in keeper:
+        return len(keeper)
+
+    keeper.add(word)
+    if len(keeper) >= cutoff:
+        return len(keeper)
+    
+    for n, ch in enumerate(next_words(bf, word)):
+        count_connected_graph(bf, word[1:] + ch, cutoff=cutoff, keeper=keeper)
+
+    for n, ch in enumerate(previous_words(bf, word)):
+        count_connected_graph(bf, ch + word[:-1], cutoff=cutoff, keeper=keeper)
+        
+    return len(keeper)
