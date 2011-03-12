@@ -7,6 +7,8 @@ OVERLAP=16
 book_data = open(sys.argv[1]).read()
 paras = book_data.split('\r\n\r\n')
 paras = [ x.replace('\r\n', ' ').strip() for x in paras ]
+paras = [ x.replace('\n', ' ').strip() for x in paras ]
+print paras
 
 x = []
 for p in paras:

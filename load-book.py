@@ -7,7 +7,7 @@ HT_SIZES=100e6
 print 'creating data structure'
 
 sizes = hash.get_n_primes_above_x(N_HT, int(HT_SIZES))
-bf = hash.BloomFilter(sizes, 16)
+bf = hash.BloomFilter(sizes, 9)
 
 print 'loading shredded reads'
 
