@@ -4,6 +4,7 @@ Check out khmer-ngram::
   Initialized empty Git repository in .* (re)
   $ cd khmer-ngram
   $ ls
+  README.txt
   basic.html
   basic.txt
   cram-test.t
@@ -23,6 +24,7 @@ Check out khmer-ngram::
 Add in another block of text for grins::
 
   $ ls
+  README.txt
   basic.html
   basic.txt
   cram-test.t
