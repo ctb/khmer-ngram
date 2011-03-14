@@ -6,6 +6,7 @@ Check out khmer-ngram::
   $ ls
   basic.html
   basic.txt
+  cram-test.t
   data
   graphsize-book.py
   hash.py
@@ -24,6 +25,7 @@ Add in another block of text for grins::
   $ ls
   basic.html
   basic.txt
+  cram-test.t
   data
   graphsize-book.py
   hash.py
